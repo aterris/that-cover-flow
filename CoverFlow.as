@@ -8,7 +8,7 @@
 package 
 {
 	//Imports
-	import com.leebrimelow.utils.Math2;
+	//import com.leebrimelow.utils.Math2;
 	import com.theflashblog.fp10.SimpleZSorter;
 	import fl.motion.easing.Exponential;
 	import flash.display.Loader;
