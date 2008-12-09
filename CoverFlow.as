@@ -24,16 +24,21 @@ package
 
 	public class CoverFlow extends Sprite
 	{
-		//Variables and Constants
+		//Variables
 		private var container:Sprite;
 		private var loader:URLLoader;
 		private var currentImage:uint;
-		private var oldImage:MovieClip;
 		private var theImages:Array;
 		private var currentTween:Tween;
 		private var Tweening:Boolean;	
 		var isClicking:Boolean = false;
 		var clickLength:uint = 0;
+		
+		//Constants - Prepare for dynamic creation by using constants
+		public const windowWidth:Number = stage.width;
+		public const windowHeight:Number = stage.height;
+		public const imageWidth:Number = 500;
+		public const imageHeight:Number = 334;
 		
 		//Constructor
 		public function CoverFlow()
@@ -51,7 +56,7 @@ package
 			container.z = 400;
 			addChild(container);
 			
-			cover.addEventListener(MouseEvent.CLICK, stageClick);
+			//cover.addEventListener(MouseEvent.CLICK, stageClick);
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
 		}
@@ -84,7 +89,7 @@ package
 				l.load(new URLRequest(list[i].@src));
 				imc.addChild(l);
 				
-				
+				trace(imc.width);
 				imc.scaleX = imc.scaleY = .8;
 				currentImage = 0;
 				imc.imageNum = i;
@@ -95,7 +100,6 @@ package
 				{
 					imc.scaleX = 1;
 					imc.scaleY = 1;
-					oldImage = imc;
 					imc.x = 0;
 				}
 				else
@@ -195,11 +199,6 @@ package
 						changeCurrentImage(theImages[currentImage+1]);
 					break;
 			}
-		}
-		
-		//stageClick
-		private function stageClick(e:MouseEvent):void
-		{
 		}
 		
 		//loop
