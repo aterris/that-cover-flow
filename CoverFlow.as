@@ -35,14 +35,19 @@ package
 		var clickLength:uint = 0;
 		
 		//Constants - Prepare for dynamic creation by using constants
-		public const windowWidth:Number = 700;//why does stage.width and height give bigger numbers than in document properties
-		public const windowHeight:Number = 500;
-		public const imageWidth:Number = 500;
-		public const imageHeight:Number = 334;
+		public const windowWidth:uint = 700;//why does stage.width and height give bigger numbers than in document properties
+		public const windowHeight:uint = 500;
+		public const imageWidth:uint = 500;
+		public const imageHeight:uint = 334;
 		public const imageScaleX:Number = .5;
 		public const imageScaleY:Number = .5;
-		public const imageRotationY:Number = 85;
+		public const imageRotationY:int = 85;
 		public const flowMiddle:Number = windowWidth/2;
+		
+		public const innerXPadding:uint = 400;
+		public const outerXPadding:uint = 50;
+		public const innerZPadding:uint = 300;
+		public const outerZPadding:uint = 10;
 		
 		//Constructor
 		public function CoverFlow()
@@ -60,7 +65,6 @@ package
 			coverContainer.z = 0;
 			addChild(coverContainer);
 			
-			trace(flowMiddle);
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
 		}
@@ -87,13 +91,15 @@ package
 				coverImage.buttonMode = true;
 				coverImage.addEventListener(MouseEvent.CLICK, onClick);
 				
+				//coverImage.width = imageWidth*imageScaleX/2;
+				//coverImage.height  = imageHeight*imageScaleY/2;
+				
 				var l:Loader = new Loader();
 				l.x = -imageWidth/2;
 				l.y = -imageHeight/2;
 				l.load(new URLRequest(list[i].@src));
 				coverImage.addChild(l);
 				
-				coverImage.scaleX = coverImage.scaleY = imageScaleX;
 				currentImage = 0;
 				coverImage.imageNum = i;
 				
@@ -101,24 +107,16 @@ package
 				
 				if(i==0)
 				{
-					coverImage.scaleX = imageScaleX;
-					coverImage.scaleY = imageScaleY;
 					coverImage.x = flowMiddle; 
-				
 					coverImage.z = 0;
 				}
 				else
 				{
 					coverImage.rotationY = imageRotationY;
-					coverImage.x = i*50+ flowMiddle + 100;
-					coverImage.z = i*10+100;
+					coverImage.x = (i-1)*outerXPadding+ flowMiddle + innerXPadding;
+					coverImage.z = i*outerZPadding+innerZPadding;
 				}
 				coverImage.y=250;
-				
-				coverImage.scaleX = imageScaleX;
-				
-				coverImage.scaleY = imageScaleY;
-				
 				
 				coverContainer.addChild(coverImage);
 				
@@ -130,46 +128,44 @@ package
 		{
 			if(!Tweening)
 			{
-				trace("test here");
+				//theNewImage.scaleX = imageScaleX;
+				//theNewImage.scaleY = imageScaleY;
+				
+				
 				Tweening = true;
 				//Move To New Location
 				if(theNewImage.imageNum > currentImage)
 				{
 					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x - (150)*(theNewImage.imageNum - currentImage)) , 3, true);
-				
 					currentImage = theNewImage.imageNum;
 				}
 				else if(theNewImage.imageNum < currentImage)
 				{
 					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x + (150)*(currentImage - theNewImage.imageNum)) , 3, true);
-				
 					currentImage = theNewImage.imageNum;
 				}
-					
+				
+				
+				//trace("1:"+theNewImage.width);
 				//Adjust Other Images
 				for(var i:int=currentImage-1; i>=0; i--)
 				{
 					if(theImages[i].rotationY !=-imageRotationY)
 						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 					
-					theImages[i].scaleX = imageScaleX;
-					theImages[i].scaleY = imageScaleY;
-					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddle)-((currentImage - i)*50+100) , 1, true);
-					theImages[i].z = (currentImage - i)*10+100;
-					
-					//trace((flowMiddle)-((currentImage - i)*75-200));
+					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddle)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
+					theImages[i].z = (currentImage - i)*outerZPadding+innerZPadding;
 				}
-					
+				
+				
 				for(var j:int=currentImage+1; j<theImages.length; j++)
 				{
+					
 					if(theImages[j].rotationY !=imageRotationY)
 						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 					
-					theImages[j].scaleX = imageScaleX;
-					theImages[j].scaleY = imageScaleY;
-					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage)*50+ flowMiddle + 100 , 1, true);
-					theImages[j].z = j*10+100;
-					//trace("z level" + theImages[j].z);
+					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowMiddle + innerXPadding , 1, true);
+					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
 				}
 				
 				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddle , 1, true);
@@ -178,9 +174,9 @@ package
 				//Turn And Scale New Center Image
 				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
 				currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
-				theNewImage.scaleX = imageScaleX;
-				theNewImage.scaleY = imageScaleY;
 				theNewImage.z = 0;
+				
+				trace(theNewImage.scaleX);
 			}
 		}		
 		
