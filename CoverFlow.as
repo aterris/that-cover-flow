@@ -8,7 +8,7 @@
 package 
 {
 	//Imports
-	//import com.leebrimelow.utils.Math2;
+	//clean these up eventually, prolly some overlap etc
 	import com.theflashblog.fp10.SimpleZSorter;
 	import fl.motion.easing.Exponential;
 	import flash.display.Loader;
@@ -21,6 +21,7 @@ package
  	import fl.transitions.Tween;
  	import fl.transitions.easing.*;
 	import fl.transitions.TweenEvent;
+	import flash.geom.Point;
 
 	public class CoverFlow extends Sprite
 	{
@@ -39,16 +40,18 @@ package
 		public const windowHeight:uint = 500;
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
-		public const imageScaleX:Number = .75;
-		public const imageScaleY:Number = .75;
-		public const imageRotationY:int = 85;
-		public const flowMiddle:Number = windowWidth/2;
 		
+		public const imageScaleX:Number = .5;
+		public const imageScaleY:Number = .5;
+		public const imageRotationY:int = 85;
 		public const innerXPadding:uint = 300;
 		public const outerXPadding:uint = 75;
 		public const innerZPadding:uint = 300;
 		public const outerZPadding:uint = 10;
 		public const flowYPadding:uint = 100;
+		
+		public const flowMiddleX:Number = windowWidth/2;
+		public const flowMiddleY:Number = windowHeight/2;
 		
 		//Constructor
 		public function CoverFlow()
@@ -65,6 +68,9 @@ package
 			coverContainer.y = 0;
 			coverContainer.z = 0;
 			addChild(coverContainer);
+			
+			//move the "camera"  -is centered on the image correct (or should it change to closer to the bottom etc)
+			root.transform.perspectiveProjection.projectionCenter = new Point(flowMiddleX, flowYPadding+imageHeight*imageScaleX/2); 
 			
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
@@ -88,7 +94,6 @@ package
 			
 			for(var i:int=0; i<list.length(); i++)
 			{
-				//need to create imCon dynamically not in the editor so it can resize when the images are resized
 				var coverImage:imCon = new imCon();
 				coverImage.buttonMode = true;
 				coverImage.addEventListener(MouseEvent.CLICK, onClick);
@@ -109,13 +114,13 @@ package
 				
 				if(i==0)
 				{
-					coverImage.x = flowMiddle; 
+					coverImage.x = flowMiddleX; 
 					coverImage.z = 0;
 				}
 				else
 				{
 					coverImage.rotationY = imageRotationY;
-					coverImage.x = (i-1)*outerXPadding+ flowMiddle + innerXPadding;
+					coverImage.x = (i-1)*outerXPadding+ flowMiddleX + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
 				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
@@ -149,14 +154,13 @@ package
 				}
 				
 				
-				//trace("1:"+theNewImage.width);
 				//Adjust Other Images
 				for(var i:int=currentImage-1; i>=0; i--)
 				{
 					if(theImages[i].rotationY !=-imageRotationY)
 						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 					
-					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddle)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
+					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddleX)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
 					//dont want back one to tween, but would be nice if old centered image would since its goign form 0 to 100+
 					//new Tween(theImages[i],"z", Strong.easeOut, theImages[i].z, (currentImage - i)*outerZPadding+innerZPadding, 1, true);
 					theImages[i].z = (currentImage - i)*outerZPadding+innerZPadding;
@@ -169,12 +173,12 @@ package
 					if(theImages[j].rotationY !=imageRotationY)
 						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 					
-					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowMiddle + innerXPadding , 1, true);
+					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowMiddleX + innerXPadding , 1, true);
 					//new Tween(theImages[j],"z", Strong.easeOut, theImages[j].z, (j-currentImage)*outerZPadding+innerZPadding , 1, true);
 					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
 				}
 				
-				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddle , 1, true);
+				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddleX , 1, true);
 				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
 				//Turn And Scale New Center Image
 				theNewImage.rotationY = 0;
