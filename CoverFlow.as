@@ -25,7 +25,7 @@ package
 	public class CoverFlow extends Sprite
 	{
 		//Variables
-		private var container:Sprite;
+		private var coverContainer:Sprite;
 		private var loader:URLLoader;
 		private var currentImage:uint;
 		private var theImages:Array;
@@ -39,6 +39,10 @@ package
 		public const windowHeight:Number = stage.height;
 		public const imageWidth:Number = 500;
 		public const imageHeight:Number = 334;
+		public const imageScaleX:Number = .5;
+		public const imageScaleY:Number = .5;
+		public const imageRotationY:Number = 85;
+		public const flowMiddle:Number = windowWidth/2 - imageWidth*imageScaleX/4;
 		
 		//Constructor
 		public function CoverFlow()
@@ -50,13 +54,13 @@ package
 		//init
 		private function init():void
 		{
-			container = new Sprite();
-			container.x = 350;
-			container.y = 250;
-			container.z = 400;
-			addChild(container);
+			coverContainer = new Sprite();
+			coverContainer.x = 0;
+			coverContainer.y = 0;
+			coverContainer.z = 0;
+			addChild(coverContainer);
 			
-			//cover.addEventListener(MouseEvent.CLICK, stageClick);
+			trace(flowMiddle);
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
 		}
@@ -79,37 +83,45 @@ package
 			
 			for(var i:int=0; i<list.length(); i++)
 			{
-				var imc:imCon = new imCon();
-				imc.buttonMode = true;
-				imc.addEventListener(MouseEvent.CLICK, onClick);
+				var coverImage:imCon = new imCon();
+				coverImage.buttonMode = true;
+				coverImage.addEventListener(MouseEvent.CLICK, onClick);
 				
 				var l:Loader = new Loader();
-				l.x = -250;
-				l.y = -167;
+				l.x = -imageWidth/2;
+				l.y = -imageHeight/2;
 				l.load(new URLRequest(list[i].@src));
-				imc.addChild(l);
+				coverImage.addChild(l);
 				
-				trace(imc.width);
-				imc.scaleX = imc.scaleY = .8;
+				coverImage.scaleX = coverImage.scaleY = imageScaleX;
 				currentImage = 0;
-				imc.imageNum = i;
+				coverImage.imageNum = i;
 				
-				theImages[i] = imc;
+				theImages[i] = coverImage;
 				
 				if(i==0)
 				{
-					imc.scaleX = 1;
-					imc.scaleY = 1;
-					imc.x = 0;
+					coverImage.scaleX = imageScaleX;
+					coverImage.scaleY = imageScaleY;
+					coverImage.x = flowMiddle; 
+				
+					coverImage.z = 0;
 				}
 				else
 				{
-					imc.rotationY = 90;
-					imc.x = i*75+200;
+					coverImage.rotationY = imageRotationY;
+					coverImage.x = i*50+ flowMiddle + 100;
+					coverImage.z = i*10+100;
 				}
+				coverImage.y=250;
 				
-				imc.z = i*10;
-				container.addChild(imc);
+				coverImage.scaleX = imageScaleX;
+				
+				coverImage.scaleY = imageScaleY;
+				
+				
+				coverContainer.addChild(coverImage);
+				
 			}
 		}
 		
@@ -118,17 +130,18 @@ package
 		{
 			if(!Tweening)
 			{
+				trace("test here");
 				Tweening = true;
 				//Move To New Location
 				if(theNewImage.imageNum > currentImage)
 				{
-					//new Tween(container,"x", Strong.easeOut, container.x, (container.x - (150)*(theNewImage.imageNum - currentImage)) , 3, true);
+					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x - (150)*(theNewImage.imageNum - currentImage)) , 3, true);
 				
 					currentImage = theNewImage.imageNum;
 				}
 				else if(theNewImage.imageNum < currentImage)
 				{
-					//new Tween(container,"x", Strong.easeOut, container.x, (container.x + (150)*(currentImage - theNewImage.imageNum)) , 3, true);
+					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x + (150)*(currentImage - theNewImage.imageNum)) , 3, true);
 				
 					currentImage = theNewImage.imageNum;
 				}
@@ -136,34 +149,37 @@ package
 				//Adjust Other Images
 				for(var i:int=currentImage-1; i>=0; i--)
 				{
-					if(theImages[i].rotationY !=-90)
-						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -90 , .5, true);
+					if(theImages[i].rotationY !=-imageRotationY)
+						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 					
-					theImages[i].scaleX = .8;
-					theImages[i].scaleY = .8;
-					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (-(currentImage - i)*75-200) , 1, true);
-					theImages[i].z = (currentImage - i);
+					theImages[i].scaleX = imageScaleX;
+					theImages[i].scaleY = imageScaleY;
+					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddle)-((currentImage - i)*50+100) , 1, true);
+					theImages[i].z = (currentImage - i)*10+100;
+					
+					//trace((flowMiddle)-((currentImage - i)*75-200));
 				}
 					
 				for(var j:int=currentImage+1; j<theImages.length; j++)
 				{
-					if(theImages[j].rotationY !=90)
-						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, 90 , .5, true);
+					if(theImages[j].rotationY !=imageRotationY)
+						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 					
-					theImages[j].scaleX = .8;
-					theImages[j].scaleY = .8;
-					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage)*75+200 , 1, true);
-					theImages[j].z = j;
+					theImages[j].scaleX = imageScaleX;
+					theImages[j].scaleY = imageScaleY;
+					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage)*50+ flowMiddle + 100 , 1, true);
+					theImages[j].z = j*10+100;
+					//trace("z level" + theImages[j].z);
 				}
 				
-				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, 0 , 1, true);
+				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddle , 1, true);
 					
 				
 				//Turn And Scale New Center Image
 				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
 				currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
-				theNewImage.scaleX = 1;
-				theNewImage.scaleY = 1;
+				theNewImage.scaleX = imageScaleX;
+				theNewImage.scaleY = imageScaleY;
 				theNewImage.z = 0;
 			}
 		}		
@@ -205,7 +221,7 @@ package
 		private function loop(e:Event):void
 		{
 			//Z Order Sorting
-			SimpleZSorter.sortClips(container);
+			SimpleZSorter.sortClips(coverContainer);
 		}
 	}
 }
