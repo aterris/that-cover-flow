@@ -39,15 +39,16 @@ package
 		public const windowHeight:uint = 500;
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
-		public const imageScaleX:Number = .5;
-		public const imageScaleY:Number = .5;
+		public const imageScaleX:Number = .75;
+		public const imageScaleY:Number = .75;
 		public const imageRotationY:int = 85;
 		public const flowMiddle:Number = windowWidth/2;
 		
-		public const innerXPadding:uint = 400;
-		public const outerXPadding:uint = 50;
+		public const innerXPadding:uint = 300;
+		public const outerXPadding:uint = 75;
 		public const innerZPadding:uint = 300;
 		public const outerZPadding:uint = 10;
+		public const flowYPadding:uint = 100;
 		
 		//Constructor
 		public function CoverFlow()
@@ -87,16 +88,17 @@ package
 			
 			for(var i:int=0; i<list.length(); i++)
 			{
+				//need to create imCon dynamically not in the editor so it can resize when the images are resized
 				var coverImage:imCon = new imCon();
 				coverImage.buttonMode = true;
 				coverImage.addEventListener(MouseEvent.CLICK, onClick);
 				
-				//coverImage.width = imageWidth*imageScaleX/2;
-				//coverImage.height  = imageHeight*imageScaleY/2;
+				coverImage.scaleX = imageScaleX;
+				coverImage.scaleY = imageScaleY;
 				
 				var l:Loader = new Loader();
-				l.x = -imageWidth/2;
-				l.y = -imageHeight/2;
+				l.x = -imageWidth*scaleX/2;
+				l.y = -imageHeight*scaleY/2;
 				l.load(new URLRequest(list[i].@src));
 				coverImage.addChild(l);
 				
@@ -116,7 +118,7 @@ package
 					coverImage.x = (i-1)*outerXPadding+ flowMiddle + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
-				coverImage.y=250;
+				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
 				
 				coverContainer.addChild(coverImage);
 				
@@ -126,14 +128,15 @@ package
 		//changeCurrentImage
 		private function changeCurrentImage(theNewImage:Object)
 		{
+			
 			if(!Tweening)
 			{
-				//theNewImage.scaleX = imageScaleX;
-				//theNewImage.scaleY = imageScaleY;
+				theNewImage.scaleX = imageScaleX;
+				theNewImage.scaleY = imageScaleY;
 				
 				
 				Tweening = true;
-				//Move To New Location
+				//Move To New Location  -This code needs to be redone, doesnt really do anything right now
 				if(theNewImage.imageNum > currentImage)
 				{
 					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x - (150)*(theNewImage.imageNum - currentImage)) , 3, true);
@@ -154,6 +157,8 @@ package
 						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 					
 					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddle)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
+					//dont want back one to tween, but would be nice if old centered image would since its goign form 0 to 100+
+					//new Tween(theImages[i],"z", Strong.easeOut, theImages[i].z, (currentImage - i)*outerZPadding+innerZPadding, 1, true);
 					theImages[i].z = (currentImage - i)*outerZPadding+innerZPadding;
 				}
 				
@@ -165,18 +170,21 @@ package
 						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 					
 					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowMiddle + innerXPadding , 1, true);
+					//new Tween(theImages[j],"z", Strong.easeOut, theImages[j].z, (j-currentImage)*outerZPadding+innerZPadding , 1, true);
 					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
 				}
 				
 				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddle , 1, true);
-					
-				
+				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
 				//Turn And Scale New Center Image
+				theNewImage.rotationY = 0;
+				//Tweening = false;
+				//somehow the bellow tween messes up the scaling and creates a situation where it does not scale in the x
 				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
 				currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
-				theNewImage.z = 0;
 				
-				trace(theNewImage.scaleX);
+				//why does this need to be done?  should already be .5  where does it change?
+				theNewImage.scaleX = imageScaleX;
 			}
 		}		
 		
