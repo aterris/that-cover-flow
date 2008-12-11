@@ -35,14 +35,14 @@ package
 		var clickLength:uint = 0;
 		
 		//Constants - Prepare for dynamic creation by using constants
-		public const windowWidth:Number = stage.width;
-		public const windowHeight:Number = stage.height;
+		public const windowWidth:Number = 700;//why does stage.width and height give bigger numbers than in document properties
+		public const windowHeight:Number = 500;
 		public const imageWidth:Number = 500;
 		public const imageHeight:Number = 334;
 		public const imageScaleX:Number = .5;
 		public const imageScaleY:Number = .5;
 		public const imageRotationY:Number = 85;
-		public const flowMiddle:Number = windowWidth/2 - imageWidth*imageScaleX/4;
+		public const flowMiddle:Number = windowWidth/2;
 		
 		//Constructor
 		public function CoverFlow()
