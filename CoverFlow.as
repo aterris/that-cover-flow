@@ -41,8 +41,8 @@ package
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
 		
-		public const imageScaleX:Number = .5;
-		public const imageScaleY:Number = .5;
+		public const imageScaleX:Number = .75;
+		public const imageScaleY:Number = .75;
 		public const imageRotationY:int = 85;
 		public const innerXPadding:uint = 300;
 		public const outerXPadding:uint = 75;
@@ -53,14 +53,15 @@ package
 		public const flowMiddleX:Number = windowWidth/2;
 		public const flowMiddleY:Number = windowHeight/2;
 		
-		//Constructor
+		//**** Initalization ****//
+		//** Constructor  **//
 		public function CoverFlow()
 		{
 			init();
 			loadXML();
 		}
 		
-		//init
+		//** init **//
 		private function init():void
 		{
 			coverContainer = new Sprite();
@@ -76,15 +77,17 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
 		}
 		
-		//loadXML
+		//** loadXML **/
 		private function loadXML():void
 		{
 			loader = new URLLoader(new URLRequest("images.xml"));
-			loader.addEventListener(Event.COMPLETE, createFlow);
+			loader.addEventListener(Event.COMPLETE, createItunesFlow);
 		}
 		
-		//createFlow
-		private function createFlow(e:Event):void
+		
+		//**** Create Flows ****//
+		//** createItunesFlow **//
+		private function createItunesFlow(e:Event):void
 		{
 			var xml:XML = new XML(e.target.data);
 			var list:XMLList = xml.image;
@@ -130,8 +133,15 @@ package
 			}
 		}
 		
-		//changeCurrentImage
-		private function changeCurrentImage(theNewImage:Object)
+		//** createXboxFlow **//
+		private function createXboxFlow(e:Event):void
+		{
+		}
+		
+		
+		//**** Change Flows ****//
+		//** changeItunesFlow **//
+		private function changeItunesFlow(theNewImage:Object)
 		{
 			
 			if(!Tweening)
@@ -178,31 +188,40 @@ package
 					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
 				}
 				
+				//THIS CODE NEEDS FIX FOR ROTATION CHANGING THE imCon SIZE
+				
 				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddleX , 1, true);
 				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
+				
+				
 				//Turn And Scale New Center Image
 				theNewImage.rotationY = 0;
-				//Tweening = false;
+				Tweening = false;
 				//somehow the bellow tween messes up the scaling and creates a situation where it does not scale in the x
+				
+				//new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0 , .5, true);
+					
 				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
-				currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
+				//currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
 				
 				//why does this need to be done?  should already be .5  where does it change?
 				theNewImage.scaleX = imageScaleX;
 			}
-		}		
+		}
 		
 		
+		//** changeItunesFlow **//
+		//Change Image of Itunes Flow
+		private function changeXboxFlow(theNewImage:Object)
+		{
+		}
+		
+		
+		//**** User Input ****//
 		//onCLick
 		private function onClick(e:MouseEvent):void
 		{
-			changeCurrentImage(e.currentTarget);
-		}
-		
-		//onTweenFinish
-		private function onTweenFinish(e:Event)
-		{
-			Tweening = false;
+			changeItunesFlow(e.currentTarget);
 		}
 		
 		//onKeyDownImage
@@ -214,18 +233,27 @@ package
 				//Left
 				case 37:
 					if(currentImage!=0)
-						changeCurrentImage(theImages[currentImage-1]);
+						changeItunesFlow(theImages[currentImage-1]);
 					break;
 				
 				//Right
 				case 39:
 					if(currentImage!=theImages.length-1)
-						changeCurrentImage(theImages[currentImage+1]);
+						changeItunesFlow(theImages[currentImage+1]);
 					break;
 			}
 		}
 		
-		//loop
+		
+		//**** Helper Functions ****//
+		//** onTweenFinish **//
+		private function onTweenFinish(e:Event)
+		{
+			Tweening = false;
+			trace(currentImage);
+		}
+		
+		//** loop **//
 		private function loop(e:Event):void
 		{
 			//Z Order Sorting
