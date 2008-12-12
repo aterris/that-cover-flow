@@ -52,10 +52,10 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "xbox";
+		public const flowStyle:String = "itunes";
 		
-		public var flowMiddleX:Number = windowWidth/2;
-		public var flowMiddleY:Number = windowHeight/2;
+		public var flowFocusX:Number = windowWidth/2;
+		public var flowFocusY:Number = windowHeight/2;
 		
 		//**** Initalization ****//
 		//** Constructor  **//
@@ -75,10 +75,10 @@ package
 			addChild(coverContainer);
 			
 			if(flowStyle=="xbox")
-				flowMiddleX =flowXPadding + imageWidth*imageScaleX/2;
+				flowFocusX =flowXPadding + imageWidth*imageScaleX/2;
 			
 			//move the "camera"  -is centered on the image correct (or should it change to closer to the bottom etc)
-			root.transform.perspectiveProjection.projectionCenter = new Point(flowMiddleX, flowYPadding+imageHeight*imageScaleX/2); 
+			root.transform.perspectiveProjection.projectionCenter = new Point(flowFocusX, flowYPadding+imageHeight*imageScaleX/2); 
 			
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
@@ -88,11 +88,24 @@ package
 		private function loadXML():void
 		{
 			loader = new URLLoader(new URLRequest("images.xml"));
-			loader.addEventListener(Event.COMPLETE, createItunesFlow);
+
+			loader.addEventListener(Event.COMPLETE, createFlow);
 		}
 		
 		
 		//**** Create Flows ****//
+		//** createFlow **//
+		private function createFlow(e:Event):void
+		{
+			if(flowStyle=="itunes")
+				createItunesFlow(e);
+			else if(flowStyle=="xbox")
+			{
+				flowFocusX =flowXPadding + imageWidth*imageScaleX/2;
+				createItunesFlow(e);
+			}
+		}
+		
 		//** createItunesFlow **//
 		private function createItunesFlow(e:Event):void
 		{
@@ -124,13 +137,13 @@ package
 				
 				if(i==0)
 				{
-					coverImage.x = flowMiddleX; 
+					coverImage.x = flowFocusX; 
 					coverImage.z = 0;
 				}
 				else
 				{
 					coverImage.rotationY = imageRotationY;
-					coverImage.x = (i-1)*outerXPadding+ flowMiddleX + innerXPadding;
+					coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
 				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
@@ -141,6 +154,14 @@ package
 		
 		
 		//**** Change Flows ****//
+		//** changeFlow **//
+		private function changeFlow(theNewImage:Object)
+		{
+			if(flowStyle=="itunes")
+				changeItunesFlow(theNewImage);
+			else if(flowStyle=="xbox")
+				changeXboxFlow(theNewImage);
+		}
 		//** changeItunesFlow **//
 		private function changeItunesFlow(theNewImage:Object)
 		{
@@ -171,7 +192,7 @@ package
 					if(theImages[i].rotationY !=-imageRotationY)
 						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 					
-					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowMiddleX)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
+					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
 					//dont want back one to tween, but would be nice if old centered image would since its goign form 0 to 100+
 					//new Tween(theImages[i],"z", Strong.easeOut, theImages[i].z, (currentImage - i)*outerZPadding+innerZPadding, 1, true);
 					theImages[i].z = (currentImage - i)*outerZPadding+innerZPadding;
@@ -184,14 +205,14 @@ package
 					if(theImages[j].rotationY !=imageRotationY)
 						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 					
-					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowMiddleX + innerXPadding , 1, true);
+					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding , 1, true);
 					//new Tween(theImages[j],"z", Strong.easeOut, theImages[j].z, (j-currentImage)*outerZPadding+innerZPadding , 1, true);
 					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
 				}
 				
 				//THIS CODE NEEDS FIX FOR ROTATION CHANGING THE imCon SIZE
 				
-				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowMiddleX , 1, true);
+				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowFocusX , 1, true);
 				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
 				
 				
@@ -222,7 +243,7 @@ package
 		//onCLick
 		private function onClick(e:MouseEvent):void
 		{
-			changeItunesFlow(e.currentTarget);
+			changeFlow(e.currentTarget);
 		}
 		
 		//onKeyDownImage
@@ -234,13 +255,13 @@ package
 				//Left
 				case 37:
 					if(currentImage!=0)
-						changeItunesFlow(theImages[currentImage-1]);
+						changeFlow(theImages[currentImage-1]);
 					break;
 				
 				//Right
 				case 39:
 					if(currentImage!=theImages.length-1)
-						changeItunesFlow(theImages[currentImage+1]);
+						changeFlow(theImages[currentImage+1]);
 					break;
 			}
 		}
