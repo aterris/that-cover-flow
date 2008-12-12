@@ -41,17 +41,21 @@ package
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
 		
-		public const imageScaleX:Number = .5;
-		public const imageScaleY:Number = .5;
-		public const imageRotationY:int = 85;
-		public const innerXPadding:uint = 300;
-		public const outerXPadding:uint = 75;
-		public const innerZPadding:uint = 300;
-		public const outerZPadding:uint = 10;
-		public const flowYPadding:uint = 200;
+		public const imageScaleX:Number = .6;
+		public const imageScaleY:Number = .6;
+		public const imageRotationY:int = 0;
+		public const innerXPadding:uint = 200;
+		public const outerXPadding:uint = 200;
+		public const innerYPadding:uint = 100;
+		public const outerYPadding:uint = 100;
+		public const innerZPadding:uint = 100;
+		public const outerZPadding:uint = 100;
+		public const flowYPadding:uint = 100;
+		public const flowXPadding:uint = 20;
+		public const flowStyle:String = "xbox";
 		
-		public const flowMiddleX:Number = windowWidth/2;
-		public const flowMiddleY:Number = windowHeight/2;
+		public var flowMiddleX:Number = windowWidth/2;
+		public var flowMiddleY:Number = windowHeight/2;
 		
 		//**** Initalization ****//
 		//** Constructor  **//
@@ -70,6 +74,9 @@ package
 			coverContainer.z = 0;
 			addChild(coverContainer);
 			
+			if(flowStyle=="xbox")
+				flowMiddleX =flowXPadding + imageWidth*imageScaleX/2;
+			
 			//move the "camera"  -is centered on the image correct (or should it change to closer to the bottom etc)
 			root.transform.perspectiveProjection.projectionCenter = new Point(flowMiddleX, flowYPadding+imageHeight*imageScaleX/2); 
 			
@@ -81,7 +88,7 @@ package
 		private function loadXML():void
 		{
 			loader = new URLLoader(new URLRequest("images.xml"));
-			loader.addEventListener(Event.COMPLETE, createXboxFlow);
+			loader.addEventListener(Event.COMPLETE, createItunesFlow);
 		}
 		
 		
@@ -124,55 +131,6 @@ package
 				{
 					coverImage.rotationY = imageRotationY;
 					coverImage.x = (i-1)*outerXPadding+ flowMiddleX + innerXPadding;
-					coverImage.z = i*outerZPadding+innerZPadding;
-				}
-				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
-				
-				coverContainer.addChild(coverImage);
-			}
-		}
-		
-		//** createXboxFlow **//
-		private function createXboxFlow(e:Event):void
-		{
-			var xml:XML = new XML(e.target.data);
-			var list:XMLList = xml.image;
-			
-			theImages = new Array();
-			Tweening = false;
-			
-			for(var i:int=0; i<list.length(); i++)
-			{
-				var coverImage:imCon = new imCon();
-				coverImage.buttonMode = true;
-				coverImage.addEventListener(MouseEvent.CLICK, onClick);
-				
-				coverImage.scaleX = imageScaleX;
-				coverImage.scaleY = imageScaleY;
-				
-				var l:Loader = new Loader();
-				l.x = -imageWidth*scaleX/2;
-				l.y = -imageHeight*scaleY/2;
-				l.load(new URLRequest(list[i].@src));
-				coverImage.addChild(l);
-				
-				currentImage = 0;
-				coverImage.imageNum = i;
-				
-				theImages[i] = coverImage;
-				
-				if(i==0)
-				{
-					coverImage.x = imageWidth*imageScaleX/2; 
-					coverImage.z = 0;
-				}
-				else
-				{
-					coverImage.rotationY = 0;
-					coverImage.x = (i-1)*outerXPadding + outerXPadding +imageWidth*imageScaleX/2;
-					
-					coverImage.y = -(i-1)*outerXPadding + outerXPadding +imageWidth*imageScaleX/2;
-					trace(coverImage.y);
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
 				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
