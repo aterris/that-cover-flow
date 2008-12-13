@@ -52,7 +52,8 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "itunes";
+		public const flowStyle:String = "xbox";
+		public const flowSlideShow:Boolean = false;
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
@@ -231,11 +232,64 @@ package
 			}
 		}
 		
-		
-		//** changeItunesFlow **//
-		//Change Image of Itunes Flow
+		//** changeXboxFlow **//
 		private function changeXboxFlow(theNewImage:Object)
 		{
+			if(!Tweening)
+			{
+				theNewImage.scaleX = imageScaleX;
+				theNewImage.scaleY = imageScaleY;
+				
+				Tweening = true;
+				currentImage = theNewImage.imageNum;
+				
+				
+				//Adjust Other Images
+				for(var i:int=currentImage-1; i>=0; i--)
+				{
+					if(theImages[i].rotationY !=-imageRotationY)
+						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
+					
+					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding) , 2, true);
+					//dont want back one to tween, but would be nice if old centered image would since its goign form 0 to 100+
+					//new Tween(theImages[i],"z", Strong.easeOut, theImages[i].z, (currentImage - i)*outerZPadding+innerZPadding, 1, true);
+					theImages[i].z = -1*((currentImage - i)*outerZPadding+innerZPadding);
+					new Tween(theImages[i],"alpha", Strong.easeOut, theImages[i].alpha, 0 , 2, true);
+				}
+				
+				
+				for(var j:int=currentImage+1; j<theImages.length; j++)
+				{
+					
+					if(theImages[j].rotationY !=imageRotationY)
+						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
+					
+					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding , 1, true);
+					//new Tween(theImages[j],"z", Strong.easeOut, theImages[j].z, (j-currentImage)*outerZPadding+innerZPadding , 1, true);
+					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;
+					new Tween(theImages[j],"alpha", Strong.easeOut, theImages[j].alpha, 100 , 1, true);
+				}
+				
+				//THIS CODE NEEDS FIX FOR ROTATION CHANGING THE imCon SIZE
+				
+				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowFocusX , 1, true);
+				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
+				
+				//new Tween(theNewImage,"alpha", Strong.easeOut, theNewImage.alpha, 100 , 1, true);
+				theNewImage.alpha=100;
+				//Turn And Scale New Center Image
+				theNewImage.rotationY = 0;
+				Tweening = false;
+				//somehow the bellow tween messes up the scaling and creates a situation where it does not scale in the x
+				
+				//new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0 , .5, true);
+					
+				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
+				//currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
+				
+				//why does this need to be done?  should already be .5  where does it change?
+				theNewImage.scaleX = imageScaleX;
+			}
 		}
 		
 		
