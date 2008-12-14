@@ -46,7 +46,7 @@ package
 		
 		public const imageScaleX:Number = .6;
 		public const imageScaleY:Number = .6;
-		public const imageRotationY:int = 85;
+		public const imageRotationY:int = 0;
 		public const innerXPadding:uint = 200;
 		public const outerXPadding:uint = 200;
 		public const innerYPadding:uint = 100;
@@ -55,7 +55,7 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "itunes";
+		public const flowStyle:String = "xbox";
 		public const flowSlideShow:Boolean = true;
 		public const slideShowChangeTimer:uint = 2000;
 		
@@ -233,12 +233,12 @@ package
 			
 			//Adjust New Current Image
 			TweenLite.to(theNewImage,1,{x:flowFocusX, z:0});
-			theNewImage.alpha=100;
+			theNewImage.alpha=1;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
-				TweenLite.to(theImages[j], 1, {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:100});
+				TweenLite.to(theImages[j], 1, {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1});
 			}
 		}
 		
@@ -286,9 +286,10 @@ package
 			SimpleZSorter.sortClips(coverContainer);
 		}
 		
-		//**changeSlideShow
+		//** changeSlideShow  **//
 		private function changeSlideShow(e:Event)
 		{
+			//Move To Next Image [0 if at the end]
 			if(currentImage!=theImages.length-1)
 				changeFlow(theImages[currentImage+1]);
 			else
