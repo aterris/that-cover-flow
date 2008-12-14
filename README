@@ -1,18 +1,17 @@
-This was originally created for an actionscript class at DePaul.  It currently needs a good amount of work, but I am going to try and get it to a point where it could be useful.
+Intro:
+  This was originally created for an actionscript class at DePaul.  It currently needs a lot of work.
 
-Some things it needs:
- more dynamic code
- developer interface
- other styles (ie Xbox 360 style cover flow)
- improve design/animations
- add preloader
- refactor code
- 
- There is probably more, but those are a few.  I will add more as they come up.
+Work Needed:
+ -fix tween problems
+ -improve graphics/animations
+ -add preloader
+ -create developer interface
+ -add depth to slides
+ -refactor code
 
+ I will add to this list as new things come up.
 
-Note:  All images are property of Scott Terris.  Taken from www.scottterris-artist.com
-
-I also used the SimpleZSorter.  See SimpleZSorter.as for details
-
+Notes:
+  -Images are the work of Scott Terris.              (www.scottterris-artist.com)
+  -I use the SimpleZSorter created by Lee Brimelow.  (theflashblog.com/?p=470)  
 
