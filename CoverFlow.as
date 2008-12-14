@@ -46,7 +46,7 @@ package
 		
 		public const imageScaleX:Number = .6;
 		public const imageScaleY:Number = .6;
-		public const imageRotationY:int = 0;
+		public const imageRotationY:int = 85;
 		public const innerXPadding:uint = 200;
 		public const outerXPadding:uint = 200;
 		public const innerYPadding:uint = 100;
@@ -55,7 +55,7 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "xbox";
+		public const flowStyle:String = "itunes";
 		public const flowSlideShow:Boolean = true;
 		public const slideShowChangeTimer:uint = 2000;
 		
@@ -175,6 +175,7 @@ package
 			slideShowTimer.reset();
 			slideShowTimer.start();
 			
+			//Change Flow
 			if(flowStyle=="itunes")
 				changeItunesFlow(theNewImage);
 			else if(flowStyle=="xbox")
@@ -183,69 +184,38 @@ package
 		//** changeItunesFlow **//
 		private function changeItunesFlow(theNewImage:Object)
 		{
-			if(!Tweening)
+			theNewImage.scaleX = imageScaleX;
+			theNewImage.scaleY = imageScaleY;
+				
+			currentImage = theNewImage.imageNum;
+		
+			//Adjust Left Images
+			for(var i:int=currentImage-1; i>=0; i--)
 			{
-				theNewImage.scaleX = imageScaleX;
-				theNewImage.scaleY = imageScaleY;
+				if(theImages[i].rotationY !=-imageRotationY)
+					theImages[i].rotationY = -imageRotationY;
+					//new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
 				
-				
-				Tweening = true;
-				//Move To New Location  -This code needs to be redone, doesnt really do anything right now
-				if(theNewImage.imageNum > currentImage)
-				{
-					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x - (150)*(theNewImage.imageNum - currentImage)) , 3, true);
-					currentImage = theNewImage.imageNum;
-				}
-				else if(theNewImage.imageNum < currentImage)
-				{
-					//new Tween(coverContainer,"x", Strong.easeOut, coverContainer.x, (coverContainer.x + (150)*(currentImage - theNewImage.imageNum)) , 3, true);
-					currentImage = theNewImage.imageNum;
-				}
-				
-				
-				//Adjust Other Images
-				for(var i:int=currentImage-1; i>=0; i--)
-				{
-					if(theImages[i].rotationY !=-imageRotationY)
-						new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
-					
-					new Tween(theImages[i],"x", Strong.easeOut, theImages[i].x, (flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding) , 1, true);
-					//dont want back one to tween, but would be nice if old centered image would since its goign form 0 to 100+
-					//new Tween(theImages[i],"z", Strong.easeOut, theImages[i].z, (currentImage - i)*outerZPadding+innerZPadding, 1, true);
-					theImages[i].z = (currentImage - i)*outerZPadding+innerZPadding;
-				}
-				
-				
-				for(var j:int=currentImage+1; j<theImages.length; j++)
-				{
-					
-					if(theImages[j].rotationY !=imageRotationY)
-						new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
-					
-					new Tween(theImages[j],"x", Strong.easeOut, theImages[j].x, (j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding , 1, true);
-					//new Tween(theImages[j],"z", Strong.easeOut, theImages[j].z, (j-currentImage)*outerZPadding+innerZPadding , 1, true);
-					theImages[j].z = (j-currentImage)*outerZPadding+innerZPadding;					
-				}
-				
-				//THIS CODE NEEDS FIX FOR ROTATION CHANGING THE imCon SIZE
-				
-				new Tween(theNewImage,"x", Strong.easeOut, theNewImage.x, flowFocusX , 1, true);
-				new Tween(theNewImage,"z", Strong.easeOut, theNewImage.z, 0 , 1, true);
-				
-				
-				//Turn And Scale New Center Image
-				theNewImage.rotationY = 0;
-				Tweening = false;
-				//somehow the bellow tween messes up the scaling and creates a situation where it does not scale in the x
-				
-				//new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0 , .5, true);
-					
-				currentTween = new Tween(theNewImage,"rotationY", Strong.easeOut, theNewImage.rotationY, 0, 1, true);
-				//currentTween.addEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
-				
-				//why does this need to be done?  should already be .5  where does it change?
-				theNewImage.scaleX = imageScaleX;
+				TweenLite.to(theImages[i],1, {z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding)});
 			}
+			
+			//Adjust Center Image
+			TweenLite.to(theNewImage,1,{x: flowFocusX, z:0});
+			theNewImage.rotationY = 0;
+			
+			//Adjust Right Images
+			for(var j:int=currentImage+1; j<theImages.length; j++)
+			{
+				if(theImages[j].rotationY !=imageRotationY)
+					theImages[j] = imageRotationY;
+					//new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
+				
+				TweenLite.to(theImages[j],1,{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding});
+			}
+			
+			//why does this need to be done?  should already be .5  where does it change?
+			theNewImage.scaleX = imageScaleX;
+			
 		}
 		
 		//** changeXboxFlow **//
@@ -261,15 +231,15 @@ package
 				TweenLite.to(theImages[i], 1, {alpha:0, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), z:-1*((currentImage - i)*outerZPadding+innerZPadding)});
 			}
 			
+			//Adjust New Current Image
+			TweenLite.to(theNewImage,1,{x:flowFocusX, z:0});
+			theNewImage.alpha=100;
+			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
 				TweenLite.to(theImages[j], 1, {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:100});
 			}
-			
-			//Adjust New Current Image
-			TweenLite.to(theNewImage,1,{x:flowFocusX, z:0});
-			theNewImage.alpha=100;
 		}
 		
 		
