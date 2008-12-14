@@ -22,7 +22,8 @@ package
  	import fl.transitions.easing.*;
 	import fl.transitions.TweenEvent;
 	import flash.geom.Point;
-
+	import flash.utils.Timer;
+	
 	public class CoverFlow extends Sprite
 	{
 		//Variables
@@ -34,6 +35,7 @@ package
 		private var Tweening:Boolean;	
 		var isClicking:Boolean = false;
 		var clickLength:uint = 0;
+		var slideShowTimer:Timer;
 		
 		//Constants - Prepare for dynamic creation by using constants
 		public const windowWidth:uint = 700;//why does stage.width and height give bigger numbers than in document properties
@@ -53,7 +55,8 @@ package
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
 		public const flowStyle:String = "xbox";
-		public const flowSlideShow:Boolean = false;
+		public const flowSlideShow:Boolean = true;
+		public const slideShowChangeTimer:uint = 5000;
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
@@ -75,10 +78,19 @@ package
 			coverContainer.z = 0;
 			addChild(coverContainer);
 			
+			//Set flowFocus
 			if(flowStyle=="xbox")
 				flowFocusX =flowXPadding + imageWidth*imageScaleX/2;
 			
-			//move the "camera"  -is centered on the image correct (or should it change to closer to the bottom etc)
+			//Set Timer For Slideshow
+			if(flowSlideShow)
+			{
+				slideShowTimer = new Timer(slideShowChangeTimer,0);
+				slideShowTimer.addEventListener (TimerEvent.TIMER, changeSlideShow);
+				slideShowTimer.start ();
+			}
+			
+			//Adjust the Camera
 			root.transform.perspectiveProjection.projectionCenter = new Point(flowFocusX, flowYPadding+imageHeight*imageScaleX/2); 
 			
 			this.addEventListener(Event.ENTER_FRAME, loop);
@@ -158,6 +170,10 @@ package
 		//** changeFlow **//
 		private function changeFlow(theNewImage:Object)
 		{
+			//Reset Timer
+			slideShowTimer.reset();
+			slideShowTimer.start();
+			
 			if(flowStyle=="itunes")
 				changeItunesFlow(theNewImage);
 			else if(flowStyle=="xbox")
@@ -166,7 +182,6 @@ package
 		//** changeItunesFlow **//
 		private function changeItunesFlow(theNewImage:Object)
 		{
-			
 			if(!Tweening)
 			{
 				theNewImage.scaleX = imageScaleX;
@@ -334,6 +349,15 @@ package
 		{
 			//Z Order Sorting
 			SimpleZSorter.sortClips(coverContainer);
+		}
+		
+		//**changeSlideShow
+		private function changeSlideShow(e:Event)
+		{
+			if(currentImage!=theImages.length-1)
+				changeFlow(theImages[currentImage+1]);
+			else
+				changeFlow(theImages[0]);
 		}
 	}
 }
