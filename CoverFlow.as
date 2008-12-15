@@ -44,9 +44,9 @@ package
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
 		
-		public const imageScaleX:Number = .6;
-		public const imageScaleY:Number = .6;
-		public const imageRotationY:int = 85;
+		public const imageScaleX:Number = .8;
+		public const imageScaleY:Number = .8;
+		public const imageRotationY:int = 0;
 		public const imageRotationZero:int = 0;
 		public const innerXPadding:uint = 200;
 		public const outerXPadding:uint = 200;
@@ -56,8 +56,8 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "itunes";
-		public const flowSlideShow:Boolean = true;
+		public const flowStyle:String = "xbox";
+		public const flowSlideShow:Boolean = false;
 		public const slideShowChangeTimer:uint = 2000;
 		
 		public var flowFocusX:Number = windowWidth/2;
@@ -172,8 +172,11 @@ package
 		private function changeFlow(theNewImage:Object)
 		{
 			//Reset Timer
-			slideShowTimer.reset();
-			slideShowTimer.start();
+			if(flowSlideShow)
+			{
+				slideShowTimer.reset();
+				slideShowTimer.start();
+			}
 			
 			//Change Flow
 			if(flowStyle=="itunes")
