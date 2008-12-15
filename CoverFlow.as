@@ -85,7 +85,7 @@ package
 			//flowContainer.height = 30;
 			addChild(flowContainer);
 			
-			//var r1 = new Reflect({mc:flowContainer, alpha:50, ratio:50, distance:0, updateTime:0, reflectionDropoff:0});
+			//var r1 = new Reflect({mc:testerclip, alpha:50, ratio:50, distance:0, updateTime:0, reflectionDropoff:0});
 			
 			//Set flowFocus
 			if(flowStyle=="xbox")
@@ -168,9 +168,12 @@ package
 					coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
+				trace(coverImage.height);
+				trace(coverImage.width);
 				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
-				
+				var r1 = new Reflect({mc:coverImage, alpha:100, ratio:200, distance:-210, updateTime:0, reflectionDropoff:0});
 				flowContainer.addChild(coverImage);
+				
 			}
 		}
 		
