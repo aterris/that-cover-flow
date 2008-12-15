@@ -14,8 +14,21 @@ Work Needed:
  -add reflections
  -refactor code
 
- I will add to this list as new things come up.
-
+Stock Settings:
+  -Xbox
+    public const imageRotationY:int = 0;
+    public const imageRotationZero:int = 0;
+    public const innerXPadding:uint = 200;
+    public const outerXPadding:uint = 200;
+    public const innerYPadding:uint = 100;
+    public const outerYPadding:uint = 100;
+    public const innerZPadding:uint = 100;
+    public const outerZPadding:uint = 100;
+    public const flowYPadding:uint = 100;
+    public const flowXPadding:uint = 20;
+    public const flowStyle:String = "xbox";
+  -Itunes 
+   
 Notes:
   -Images are the work of Scott Terris.    (http://www.scottterris-artist.com)
   -SimpleZSorter created by Lee Brimelow.  (http://theflashblog.com/?p=470)  
