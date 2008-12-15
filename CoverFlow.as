@@ -56,13 +56,13 @@ package
 		public const outerYPadding:uint = 100;
 		public const innerZPadding:uint = 100;
 		public const outerZPadding:uint = 100;
-		public const flowYPadding:uint = 100;
-		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "xbox";
+    	public const flowYPadding:uint = 50;
+    	public const flowXPadding:uint = 20;
+   		public const flowStyle:String = "xbox";
 		public const flowSlideShow:Boolean = false;
 		public const slideShowChangeTimer:uint = 2000;
 		public const reflectShow:Boolean = true;
-		public const reflectAlpha:uint = 50;
+		public const reflectAlpha:uint = 100;
 		public const reflectRatio:uint = 100;
 		public const reflectDistance:uint = 0;
 		
@@ -85,11 +85,7 @@ package
 			flowContainer.x = 0;
 			flowContainer.y = 0;
 			flowContainer.z = 0;
-			//flowContainer.width = 50;
-			//flowContainer.height = 30;
 			addChild(flowContainer);
-			
-			//var r1 = new Reflect({mc:testerclip, alpha:50, ratio:50, distance:0, updateTime:0, reflectionDropoff:0});
 			
 			//Set Timer For Slideshow
 			if(flowSlideShow)
@@ -102,6 +98,7 @@ package
 			//Adjust the Camera
 			root.transform.perspectiveProjection.projectionCenter = new Point(flowFocusX, flowYPadding+imageHeight*imageScaleX/2); 
 			
+			//Add Listeners
 			this.addEventListener(Event.ENTER_FRAME, loop);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownImage);
 		}
@@ -110,7 +107,6 @@ package
 		private function loadXML():void
 		{
 			loader = new URLLoader(new URLRequest("images.xml"));
-
 			loader.addEventListener(Event.COMPLETE, createFlow);
 		}
 		
@@ -120,7 +116,10 @@ package
 		private function createFlow(e:Event):void
 		{
 			if(flowStyle=="itunes")
+			{
+				flowFocusX = (windowWidth/2) - (imageWidth*imageScaleX/2);
 				createItunesFlow(e);
+			}
 			else if(flowStyle=="xbox")
 			{
 				flowFocusX =flowXPadding;
@@ -166,8 +165,12 @@ package
 				else
 				{
 					coverImage.rotationY = imageRotationY;
-					coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
+					if(flowStyle=="itunes")
+						coverImage.x = (i-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding;
+					else if(flowStyle=="xbox")
+						coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
+					//trace(coverImage.z);
 				}
 
 				//Add Image To Display
@@ -208,8 +211,10 @@ package
 			{
 				if(theImages[i].rotationY !=-imageRotationY)
 					Tweener.addTween(theImages[i], {rotationY: -imageRotationY, time:1, transition:"linear"});
-					
-				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), time:1, transition:"linear"});
+				
+				
+				trace((flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding));
+				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding), time:1, transition:"linear"});
 			}
 			
 			//Adjust Center Image
@@ -223,9 +228,11 @@ package
 				if(theImages[j].rotationY !=imageRotationY)
 					Tweener.addTween(theImages[j], {rotationY: imageRotationY, time:1, transition:"linear"});
 
-				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, time:1, transition:"linear"});
+				//trace((j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding);
+				
+				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding-50, time:1, transition:"linear"});
 			}
-			
+			trace("\n");
 			//why does this need to be done?  should already be .5  where does it change?
 			theNewImage.scaleX = imageScaleX;
 			theNewImage.scaleY = imageScaleY;
@@ -290,7 +297,6 @@ package
 		private function onTweenFinish(e:Event)
 		{
 			Tweening = false;
-			trace(currentImage);
 		}
 		
 		//** loop **//
