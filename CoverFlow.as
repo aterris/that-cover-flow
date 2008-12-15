@@ -46,8 +46,8 @@ package
 		public const imageWidth:uint = 500;
 		public const imageHeight:uint = 334;
 		
-		public const imageScaleX:Number = .8;
-		public const imageScaleY:Number = .8;
+		public const imageScaleX:Number = 1;
+		public const imageScaleY:Number = 1;
 		public const imageRotationY:int = 0;
 		public const imageRotationZero:int = 0;
 		public const innerXPadding:uint = 200;
@@ -61,6 +61,10 @@ package
 		public const flowStyle:String = "xbox";
 		public const flowSlideShow:Boolean = false;
 		public const slideShowChangeTimer:uint = 2000;
+		public const reflectShow:Boolean = true;
+		public const reflectAlpha:uint = 50;
+		public const reflectRatio:uint = 100;
+		public const reflectDistance:uint = 0;
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
@@ -86,10 +90,6 @@ package
 			addChild(flowContainer);
 			
 			//var r1 = new Reflect({mc:testerclip, alpha:50, ratio:50, distance:0, updateTime:0, reflectionDropoff:0});
-			
-			//Set flowFocus
-			if(flowStyle=="xbox")
-				flowFocusX =flowXPadding + imageWidth*imageScaleX/2;
 			
 			//Set Timer For Slideshow
 			if(flowSlideShow)
@@ -123,7 +123,7 @@ package
 				createItunesFlow(e);
 			else if(flowStyle=="xbox")
 			{
-				flowFocusX =flowXPadding + imageWidth*imageScaleX/2;
+				flowFocusX =flowXPadding;
 				createItunesFlow(e);
 			}
 		}
@@ -144,10 +144,11 @@ package
 				
 				coverImage.scaleX = imageScaleX;
 				coverImage.scaleY = imageScaleY;
+				coverImage.y=flowYPadding;
 				
 				var l:Loader = new Loader();
-				l.x = -imageWidth*scaleX/2;
-				l.y = -imageHeight*scaleY/2;
+				l.x = 5;
+				l.y = 5;
 				l.load(new URLRequest(list[i].@src));
 				coverImage.addChild(l);
 				
@@ -168,12 +169,13 @@ package
 					coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
 					coverImage.z = i*outerZPadding+innerZPadding;
 				}
-				trace(coverImage.height);
-				trace(coverImage.width);
-				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
-				var r1 = new Reflect({mc:coverImage, alpha:100, ratio:200, distance:-210, updateTime:0, reflectionDropoff:0});
+
+				//Add Image To Display
 				flowContainer.addChild(coverImage);
 				
+				//Add Reflections
+				if(reflectShow)
+					new Reflect({mc:coverImage, alpha:reflectAlpha, ratio:reflectRatio, distance:reflectDistance, updateTime:0, reflectionDropoff:0});
 			}
 		}
 		
