@@ -1,12 +1,17 @@
 Intro:
-  This was originally created for an actionscript class at DePaul.  It currently needs a lot of work.
+  This was originally created for an actionscript class at DePaul.
 
 Work Needed:
- -fix tween problems
- -improve graphics/animations
+ -fix rotation/scale problem
+ -improve tweens (not just linear)
  -add preloader
  -create developer interface
  -add depth to slides
+ -move flow with mouse
+ -allow optional page links
+ -allow optional captions
+ -improve background/make into mc
+ -add reflections
  -refactor code
 
  I will add to this list as new things come up.
@@ -14,6 +19,6 @@ Work Needed:
 Notes:
   -Images are the work of Scott Terris.    (http://www.scottterris-artist.com)
   -SimpleZSorter created by Lee Brimelow.  (http://theflashblog.com/?p=470)  
-  -TweenLite created by GreenSock.         (http://blog.greensock.com/tweenliteas3)
+  -Tweener                                 (http://code.google.com/p/tweener)
 
 
