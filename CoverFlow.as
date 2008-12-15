@@ -11,7 +11,9 @@ package
 	//clean these up eventually, prolly some overlap etc
 	import com.theflashblog.fp10.SimpleZSorter;
 	import caurina.transitions.*
+	import com.pixelfumes.reflect.*;
 	import fl.motion.easing.Exponential;
+  	import flash.display.MovieClip;
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -28,7 +30,7 @@ package
 	public class CoverFlow extends Sprite
 	{
 		//Variables
-		private var coverContainer:Sprite;
+		private var flowContainer:MovieClip;
 		private var loader:URLLoader;
 		private var currentImage:uint;
 		private var theImages:Array;
@@ -74,11 +76,16 @@ package
 		//** init **//
 		private function init():void
 		{
-			coverContainer = new Sprite();
-			coverContainer.x = 0;
-			coverContainer.y = 0;
-			coverContainer.z = 0;
-			addChild(coverContainer);
+			//Create Flow Container
+			flowContainer = new MovieClip();
+			flowContainer.x = 0;
+			flowContainer.y = 0;
+			flowContainer.z = 0;
+			//flowContainer.width = 50;
+			//flowContainer.height = 30;
+			addChild(flowContainer);
+			
+			//var r1 = new Reflect({mc:flowContainer, alpha:50, ratio:50, distance:0, updateTime:0, reflectionDropoff:0});
 			
 			//Set flowFocus
 			if(flowStyle=="xbox")
@@ -149,6 +156,7 @@ package
 				
 				theImages[i] = coverImage;
 				
+				
 				if(i==0)
 				{
 					coverImage.x = flowFocusX; 
@@ -162,7 +170,7 @@ package
 				}
 				coverImage.y=flowYPadding+imageHeight*imageScaleY/2;
 				
-				coverContainer.addChild(coverImage);
+				flowContainer.addChild(coverImage);
 			}
 		}
 		
@@ -284,7 +292,7 @@ package
 		private function loop(e:Event):void
 		{
 			//Z Order Sorting
-			SimpleZSorter.sortClips(coverContainer);
+			SimpleZSorter.sortClips(flowContainer);
 		}
 		
 		//** changeSlideShow  **//
