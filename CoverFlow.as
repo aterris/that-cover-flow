@@ -10,7 +10,8 @@ package
 	//Imports
 	//clean these up eventually, prolly some overlap etc
 	import com.theflashblog.fp10.SimpleZSorter;
-	import gs.*;
+	//import gs.*;
+	import caurina.transitions.*
 	import fl.motion.easing.Exponential;
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -127,7 +128,6 @@ package
 			var list:XMLList = xml.image;
 			
 			theImages = new Array();
-			Tweening = false;
 			
 			for(var i:int=0; i<list.length(); i++)
 			{
@@ -181,6 +181,7 @@ package
 			else if(flowStyle=="xbox")
 				changeXboxFlow(theNewImage);
 		}
+		
 		//** changeItunesFlow **//
 		private function changeItunesFlow(theNewImage:Object)
 		{
@@ -189,19 +190,18 @@ package
 				
 			currentImage = theNewImage.imageNum;
 		
-			//Adjust Left Images
+			//Adjust Left Image
 			for(var i:int=currentImage-1; i>=0; i--)
 			{
 				if(theImages[i].rotationY !=-imageRotationY)
-					theImages[i].rotationY = -imageRotationY;
-					//new Tween(theImages[i],"rotationY", Strong.easeOut, theImages[i].rotationY, -imageRotationY , .5, true);
-				
-				TweenLite.to(theImages[i],1, {z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding)});
+					Tweener.addTween(theImages[i], {rotationY: -imageRotationY, time:1, transition:"linear"});
+					
+				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), time:1, transition:"linear"});
 			}
 			
 			//Adjust Center Image
-			TweenLite.to(theNewImage,1,{x: flowFocusX, z:0});
-			theNewImage.rotationY = 0;
+			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,rotationY:0, time:1, transition:"linear"});
+			//theNewImage.rotationY = 0;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
@@ -210,7 +210,7 @@ package
 					theImages[j] = imageRotationY;
 					//new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
 				
-				TweenLite.to(theImages[j],1,{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding});
+				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, time:1, transition:"linear"});
 			}
 			
 			//why does this need to be done?  should already be .5  where does it change?
@@ -228,17 +228,17 @@ package
 			//Adjust Left Images
 			for(var i:int=currentImage-1; i>=0; i--)
 			{
-				TweenLite.to(theImages[i], 1, {alpha:0, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), z:-1*((currentImage - i)*outerZPadding+innerZPadding)});
+				Tweener.addTween(theImages[i], {alpha:0, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), z:-1*((currentImage - i)*outerZPadding+innerZPadding), time:1, transition:"linear"});
 			}
 			
 			//Adjust New Current Image
-			TweenLite.to(theNewImage,1,{x:flowFocusX, z:0});
+			Tweener.addTween(theNewImage,{x:flowFocusX, z:0, time:1, transition:"linear"});
 			theNewImage.alpha=1;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
-				TweenLite.to(theImages[j], 1, {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1});
+				Tweener.addTween(theImages[j], {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1, time:1, transition:"linear"});
 			}
 		}
 		
