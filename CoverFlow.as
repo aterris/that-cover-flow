@@ -59,12 +59,13 @@ package
     	public const flowYPadding:uint = 50;
     	public const flowXPadding:uint = 20;
    		public const flowStyle:String = "xbox";
-		public const flowSlideShow:Boolean = false;
+		public const flowSlideShow:Boolean = true;
 		public const slideShowChangeTimer:uint = 2000;
 		public const reflectShow:Boolean = true;
 		public const reflectAlpha:uint = 100;
 		public const reflectRatio:uint = 100;
 		public const reflectDistance:uint = 0;
+		public const startImage:uint = 0;
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
@@ -132,54 +133,45 @@ package
 		{
 			var xml:XML = new XML(e.target.data);
 			var list:XMLList = xml.image;
-			
 			theImages = new Array();
 			
 			for(var i:int=0; i<list.length(); i++)
 			{
+				//Create Flow Slide
 				var coverImage:imCon = new imCon();
 				coverImage.buttonMode = true;
 				coverImage.addEventListener(MouseEvent.CLICK, onClick);
 				
+				//Adjust Flow Scale
 				coverImage.scaleX = imageScaleX;
 				coverImage.scaleY = imageScaleY;
+				
+				//Adjust Flow Height
 				coverImage.y=flowYPadding;
 				
+				//Load Image
 				var l:Loader = new Loader();
 				l.x = 5;
 				l.y = 5;
 				l.load(new URLRequest(list[i].@src));
 				coverImage.addChild(l);
 				
+				//Keep Track Of Image
 				currentImage = 0;
 				coverImage.imageNum = i;
-				
 				theImages[i] = coverImage;
-				
-				
-				if(i==0)
-				{
-					coverImage.x = flowFocusX; 
-					coverImage.z = 0;
-				}
-				else
-				{
-					coverImage.rotationY = imageRotationY;
-					if(flowStyle=="itunes")
-						coverImage.x = (i-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding;
-					else if(flowStyle=="xbox")
-						coverImage.x = (i-1)*outerXPadding+ flowFocusX + innerXPadding;
-					coverImage.z = i*outerZPadding+innerZPadding;
-					//trace(coverImage.z);
-				}
-
-				//Add Image To Display
-				flowContainer.addChild(coverImage);
 				
 				//Add Reflections
 				if(reflectShow)
-					new Reflect({mc:coverImage, alpha:reflectAlpha, ratio:reflectRatio, distance:reflectDistance, updateTime:0, reflectionDropoff:0});
+					new Reflect({mc:coverImage, alpha:reflectAlpha, ratio:reflectRatio, distance:reflectDistance-10, updateTime:0, reflectionDropoff:0});
+			
+				//Add Image To Display
+				flowContainer.addChild(coverImage);
+				
 			}
+			
+			//Move to Starting Image
+			changeFlow(theImages[startImage]);
 		}
 		
 		
@@ -212,15 +204,13 @@ package
 				if(theImages[i].rotationY !=-imageRotationY)
 					Tweener.addTween(theImages[i], {rotationY: -imageRotationY, time:1, transition:"linear"});
 				
-				
-				trace((flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding));
-				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding), time:1, transition:"linear"});
+				//trace((flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding));
+				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding)-imageWidth, time:1, transition:"linear"});
 			}
 			
 			//Adjust Center Image
-			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,/*rotationY:0,*/ time:1, transition:"linear"});
-			//Tweener.addTween(theNewImage, {rotationY:0, time:5, delay:1, transition:"linear"});
-			theNewImage.rotationY = 0;
+			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,rotationY:0, time:1, transition:"linear"});
+			//theNewImage.rotationY = 0;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
@@ -229,18 +219,11 @@ package
 					Tweener.addTween(theImages[j], {rotationY: imageRotationY, time:1, transition:"linear"});
 
 				//trace((j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding);
-				
 				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding-50, time:1, transition:"linear"});
 			}
-			trace("\n");
-			//why does this need to be done?  should already be .5  where does it change?
-			theNewImage.scaleX = imageScaleX;
-			theNewImage.scaleY = imageScaleY;
-			
 		}
 		
 		//** changeXboxFlow **//
-		//transpareceny tween->0 only works on first tween
 		private function changeXboxFlow(theNewImage:Object)
 		{
 			//Set New Current Image
@@ -259,7 +242,7 @@ package
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
-				Tweener.addTween(theImages[j], {x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1, time:1, transition:"linear"});
+				Tweener.addTween(theImages[j], {x:(j-currentImage-1)*outerXPadding+ (flowFocusX) + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1, time:1, transition:"linear"});
 			}
 		}
 		
@@ -293,12 +276,6 @@ package
 		
 		
 		//**** Helper Functions ****//
-		//** onTweenFinish **//
-		private function onTweenFinish(e:Event)
-		{
-			Tweening = false;
-		}
-		
 		//** loop **//
 		private function loop(e:Event):void
 		{
