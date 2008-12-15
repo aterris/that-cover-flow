@@ -10,7 +10,6 @@ package
 	//Imports
 	//clean these up eventually, prolly some overlap etc
 	import com.theflashblog.fp10.SimpleZSorter;
-	//import gs.*;
 	import caurina.transitions.*
 	import fl.motion.easing.Exponential;
 	import flash.display.Loader;
@@ -47,7 +46,8 @@ package
 		
 		public const imageScaleX:Number = .6;
 		public const imageScaleY:Number = .6;
-		public const imageRotationY:int = 0;
+		public const imageRotationY:int = 85;
+		public const imageRotationZero:int = 0;
 		public const innerXPadding:uint = 200;
 		public const outerXPadding:uint = 200;
 		public const innerYPadding:uint = 100;
@@ -56,7 +56,7 @@ package
 		public const outerZPadding:uint = 100;
 		public const flowYPadding:uint = 100;
 		public const flowXPadding:uint = 20;
-		public const flowStyle:String = "xbox";
+		public const flowStyle:String = "itunes";
 		public const flowSlideShow:Boolean = true;
 		public const slideShowChangeTimer:uint = 2000;
 		
@@ -185,9 +185,6 @@ package
 		//** changeItunesFlow **//
 		private function changeItunesFlow(theNewImage:Object)
 		{
-			theNewImage.scaleX = imageScaleX;
-			theNewImage.scaleY = imageScaleY;
-				
 			currentImage = theNewImage.imageNum;
 		
 			//Adjust Left Image
@@ -200,21 +197,22 @@ package
 			}
 			
 			//Adjust Center Image
-			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,rotationY:0, time:1, transition:"linear"});
-			//theNewImage.rotationY = 0;
+			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,/*rotationY:0,*/ time:1, transition:"linear"});
+			//Tweener.addTween(theNewImage, {rotationY:0, time:5, delay:1, transition:"linear"});
+			theNewImage.rotationY = 0;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
 				if(theImages[j].rotationY !=imageRotationY)
-					theImages[j] = imageRotationY;
-					//new Tween(theImages[j],"rotationY", Strong.easeOut, theImages[j].rotationY, imageRotationY , .5, true);
-				
+					Tweener.addTween(theImages[j], {rotationY: imageRotationY, time:1, transition:"linear"});
+
 				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding, x:(j-currentImage-1)*outerXPadding+ flowFocusX + innerXPadding, time:1, transition:"linear"});
 			}
 			
 			//why does this need to be done?  should already be .5  where does it change?
 			theNewImage.scaleX = imageScaleX;
+			theNewImage.scaleY = imageScaleY;
 			
 		}
 		
