@@ -116,25 +116,18 @@ package
 		//** createFlow **//
 		private function createFlow(e:Event):void
 		{
+			//Set flowFocusX
 			if(flowStyle=="itunes")
-			{
 				flowFocusX = (windowWidth/2) - (imageWidth*imageScaleX/2);
-				createItunesFlow(e);
-			}
 			else if(flowStyle=="xbox")
-			{
 				flowFocusX =flowXPadding;
-				createItunesFlow(e);
-			}
-		}
-		
-		//** createItunesFlow **//
-		private function createItunesFlow(e:Event):void
-		{
+				
+			//Get XML
 			var xml:XML = new XML(e.target.data);
 			var list:XMLList = xml.image;
 			theImages = new Array();
 			
+			//Create Flow Slides
 			for(var i:int=0; i<list.length(); i++)
 			{
 				//Create Flow Slide
