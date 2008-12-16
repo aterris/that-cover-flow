@@ -2,33 +2,14 @@ Intro:
   This was originally created for an actionscript class at DePaul.
 
 Work Needed:
- -fix rotation/scale problem
- -improve tweens (not just linear)
- -add preloader
- -create developer interface
- -add depth to slides
- -move flow with mouse
- -allow optional page links
- -allow optional captions
- -improve background/make into mc
- -add reflections
- -refactor code
+ -http://aterris.lighthouseapp.com/projects/21686-that-cover-flow/tickets
 
-Stock Settings:
+Default Flow Settings:
   -Xbox
-    public const imageRotationY:int = 0;
-    public const imageRotationZero:int = 0;
-    public const innerXPadding:uint = 200;
-    public const outerXPadding:uint = 200;
-    public const innerYPadding:uint = 100;
-    public const outerYPadding:uint = 100;
-    public const innerZPadding:uint = 100;
-    public const outerZPadding:uint = 100;
-    public const flowYPadding:uint = 100;
-    public const flowXPadding:uint = 20;
-    public const flowStyle:String = "xbox";
+    http://aterris.lighthouseapp.com/projects/21686-that-cover-flow/messages/12876-default-xboxflow-settings
   -Itunes 
-   
+   http://aterris.lighthouseapp.com/projects/21686-that-cover-flow/messages/12877-default-itunesflow-settings
+
 Notes:
   -Images are the work of Scott Terris.    (http://www.scottterris-artist.com)
   -SimpleZSorter created by Lee Brimelow.  (http://theflashblog.com/?p=470)  
