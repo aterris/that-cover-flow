@@ -48,7 +48,7 @@ package
 		
 		public const imageScaleX:Number = 1;
 		public const imageScaleY:Number = 1;
-		public const imageRotationY:int = 85;
+		public const imageRotationY:int = 0;
 		public const imageRotationZero:int = 0;
 		public const innerXPadding:uint = 200;
 		public const outerXPadding:uint = 200;
@@ -58,14 +58,15 @@ package
 		public const outerZPadding:uint = 100;
     	public const flowYPadding:uint = 50;
     	public const flowXPadding:uint = 20;
-   		public const flowStyle:String = "itunes";
-		public const flowSlideShow:Boolean = false;
+   		public const flowStyle:String = "xbox";
+		public const flowSlideShow:Boolean = true;
 		public const slideShowChangeTimer:uint = 2000;
 		public const reflectShow:Boolean = true;
 		public const reflectAlpha:uint = 100;
 		public const reflectRatio:uint = 100;
 		public const reflectDistance:int = -10;
 		public const startImage:uint = 0;
+		public const tweenTime:Number = 1;
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
@@ -195,25 +196,25 @@ package
 			for(var i:int=currentImage-1; i>=0; i--)
 			{
 				if(theImages[i].rotationY !=-imageRotationY)
-					Tweener.addTween(theImages[i], {rotationY: -imageRotationY, time:1, transition:"linear"});
+					Tweener.addTween(theImages[i], {rotationY: -imageRotationY, time:tweenTime, transition:"linear"});
 				
 				//trace((flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding));
-				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding)-imageWidth + 5*(Math.cos(imageRotationY*Math.PI/180)*imageWidth*imageScaleX/2), time:1, transition:"linear"});
+				Tweener.addTween(theImages[i],{z:(currentImage - i)*outerZPadding+innerZPadding, x:(flowFocusX+(imageWidth*imageScaleX/2))-((currentImage - i-1)*outerXPadding+innerXPadding)-imageWidth + 5*(Math.cos(imageRotationY*Math.PI/180)*imageWidth*imageScaleX/2), time:tweenTime, transition:"linear"});
 			}
 			
 			trace(Math.cos(imageRotationY*Math.PI/180)*imageWidth/2);
 			//Adjust Center Image
-			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,rotationY:0, time:1, transition:"linear"});
+			Tweener.addTween(theNewImage,{x: flowFocusX, z:0,rotationY:0, time:tweenTime, transition:"linear"});
 			//theNewImage.rotationY = 0;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
 				if(theImages[j].rotationY !=imageRotationY)
-					Tweener.addTween(theImages[j], {rotationY: imageRotationY, time:1, transition:"linear"});
+					Tweener.addTween(theImages[j], {rotationY: imageRotationY, time:tweenTime, transition:"linear"});
 
 				//trace((j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding);
-				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding+(Math.sin(imageRotationY*Math.PI/180)*imageWidth/2), x:(j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding+(Math.cos(imageRotationY*Math.PI/180)*imageWidth/2)+imageWidth/2, time:1, transition:"linear"});
+				Tweener.addTween(theImages[j],{z:(j-currentImage)*outerZPadding+innerZPadding+(Math.sin(imageRotationY*Math.PI/180)*imageWidth/2), x:(j-currentImage-1)*outerXPadding+ (flowFocusX+(imageWidth*imageScaleX/2)) + innerXPadding+(Math.cos(imageRotationY*Math.PI/180)*imageWidth/2)+imageWidth/2, time:tweenTime, transition:"linear"});
 			}
 		}
 		
@@ -226,17 +227,17 @@ package
 			//Adjust Left Images
 			for(var i:int=currentImage-1; i>=0; i--)
 			{
-				Tweener.addTween(theImages[i], {alpha:0, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), z:-1*((currentImage - i)*outerZPadding+innerZPadding), time:1, transition:"linear"});
+				Tweener.addTween(theImages[i], {alpha:0, x:(flowFocusX)-((currentImage - i-1)*outerXPadding+innerXPadding), z:-1*((currentImage - i)*outerZPadding+innerZPadding), time:tweenTime, transition:"linear"});
 			}
 			
 			//Adjust New Current Image
-			Tweener.addTween(theNewImage,{x:flowFocusX, z:0, time:1, transition:"linear"});
+			Tweener.addTween(theNewImage,{x:flowFocusX, z:0, time:tweenTime, transition:"linear"});
 			theNewImage.alpha=1;
 			
 			//Adjust Right Images
 			for(var j:int=currentImage+1; j<theImages.length; j++)
 			{
-				Tweener.addTween(theImages[j], {x:(j-currentImage-1)*outerXPadding+ (flowFocusX) + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1, time:1, transition:"linear"});
+				Tweener.addTween(theImages[j], {x:(j-currentImage-1)*outerXPadding+ (flowFocusX) + innerXPadding, z:(j-currentImage)*outerZPadding+innerZPadding, alpha:1, time:tweenTime, transition:"linear"});
 			}
 		}
 		
