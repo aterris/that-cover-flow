@@ -26,6 +26,8 @@ package
 	import fl.transitions.TweenEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
+	import flash.net.navigateToURL;
+    import flash.net.URLRequest;
 	
 	public class CoverFlow extends Sprite
 	{
@@ -34,6 +36,7 @@ package
 		private var loader:URLLoader;
 		private var currentImage:uint;
 		private var theImages:Array;
+		private var theLinks:Array;
 		private var currentTween:Tween;
 		private var Tweening:Boolean;	
 		var isClicking:Boolean = false;
@@ -70,6 +73,8 @@ package
 		
 		public var flowFocusX:Number = windowWidth/2;
 		public var flowFocusY:Number = windowHeight/2;
+		public var firstTime:Boolean = true;
+		//public var theLinks:Array; = new Array();
 		
 		//**** Initalization ****//
 		//** Constructor  **//
@@ -127,7 +132,17 @@ package
 			//Get XML
 			var xml:XML = new XML(e.target.data);
 			var list:XMLList = xml.image;
+
+
+			//_root.myWidth = slideshowXML.firstChild.attributes.width;
+//			_root.myHeight = slideshowXML.firstChild.attributes.height;
+//			_root.mySpeed = slideshowXML.firstChild.attributes.speed;
+//			_root.myImages = slideshowXML.firstChild.childNodes;
+//			_root.myImagesNo = myImages.length;
+			
+			
 			theImages = new Array();
+			theLinks = new Array();
 			
 			//Create Flow Slides
 			for(var i:int=0; i<list.length(); i++)
@@ -149,12 +164,15 @@ package
 				l.x = 5;
 				l.y = 5;
 				l.load(new URLRequest(list[i].@src));
+				trace(list[i].@link);
 				coverImage.addChild(l);
 				
 				//Keep Track Of Image
 				currentImage = 0;
 				coverImage.imageNum = i;
 				theImages[i] = coverImage;
+				theLinks[i] = list[i].@link;
+				
 				
 				//Add Reflections
 				if(reflectShow)
@@ -180,6 +198,25 @@ package
 				slideShowTimer.reset();
 				slideShowTimer.start();
 			}
+			
+			if(theNewImage==theImages[currentImage] && !firstTime)
+			{
+				trace("here we go again");
+				//getURL(list[currentImage].@link,"_self");
+				 var req:URLRequest = new URLRequest(theLinks[currentImage]);
+            		//trace("getURL", list[currentImage].@link,);
+           		try
+            	{
+                	navigateToURL(req, "_self");
+           	 	}
+            	catch (e:Error)
+            	{
+                	trace("Navigate to URL failed", e.message);
+            	}	
+			}
+			
+			if(firstTime)
+				firstTime = false;
 			
 			//Change Flow
 			if(flowStyle=="itunes")
