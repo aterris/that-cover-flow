@@ -41,26 +41,26 @@ package
 		var slideShowTimer:Timer;
 		
 		//Constants - Prepare for dynamic creation by using constants
-		public const windowWidth:uint = 700;//why does stage.width and height give bigger numbers than in document properties
-		public const windowHeight:uint = 500;
-		public const imageWidth:uint = 500;
-		public const imageHeight:uint = 334;
+		public const windowWidth:uint = 600;//why does stage.width and height give bigger numbers than in document properties
+		public const windowHeight:uint = 300;
+		public const imageWidth:uint = 250;
+		public const imageHeight:uint = 250;
 		
 		public const imageScaleX:Number = 1;
 		public const imageScaleY:Number = 1;
 		public const imageRotationY:int = 0;
 		public const imageRotationZero:int = 0;
 		public const innerXPadding:uint = 200;
-		public const outerXPadding:uint = 200;
+		public const outerXPadding:uint = 150;
 		public const innerYPadding:uint = 100;
 		public const outerYPadding:uint = 100;
 		public const innerZPadding:uint = 100;
 		public const outerZPadding:uint = 100;
-    	public const flowYPadding:uint = 50;
-    	public const flowXPadding:uint = 20;
+    	public const flowYPadding:uint = 10;
+    	public const flowXPadding:uint = 10;
    		public const flowStyle:String = "xbox";
 		public const flowSlideShow:Boolean = true;
-		public const slideShowChangeTimer:uint = 2000;
+		public const slideShowChangeTimer:uint = 3000;
 		public const reflectShow:Boolean = true;
 		public const reflectAlpha:uint = 100;
 		public const reflectRatio:uint = 100;
@@ -82,6 +82,7 @@ package
 		//** init **//
 		private function init():void
 		{
+			
 			//Create Flow Container
 			flowContainer = new MovieClip();
 			flowContainer.x = 0;
